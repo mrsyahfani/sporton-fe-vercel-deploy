@@ -6,60 +6,35 @@ import Button from "../ui/button";
 import { FiTrash2, FiCreditCard } from "react-icons/fi";
 import CardWithHeader from "../ui/card-with-header";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/app/hooks/use-cart-store";
+import { getImageUrl } from "@/app/lib/api";
 
-const cartList = [
-  {
-    name: "SportsOn Product 1",
-    category: "Running",
-    price: 450000,
-    qty: 2,
-    imgUrl: "product-1.png",
-  },
-  {
-    name: "SportsOn Product 2",
-    category: "Running",
-    price: 250000,
-    qty: 3,
-    imgUrl: "product-2.png",
-  },
-  {
-    name: "SportsOn Product 3",
-    category: "Running",
-    qty:5,
-    price: 230000,
-    imgUrl: "product-3.png",
-  },
-  {
-    name: "SportsOn Product 4",
-    category: "Running",
-    qty:5,
-    price: 400000,
-    imgUrl: "product-4.png",
-  },
-];
+type TCartItems = {
+  handlePayment: () => void;
+}
 
-export default function CartItems() {
+export default function CartItems({handlePayment}: TCartItems) {
+
+    const {items, removeItem} = useCartStore();
 
     const {push} = useRouter();
 
-    const totalPrice = cartList.reduce(
+    const totalPrice = items.reduce(
     (total, item) => total + item.price * item.qty,
     0
   );
 
-  const payment = () => {
-
-  }
 
     return (
         <CardWithHeader title="Cart Items">
-            <div className="overflow-auto max-h-[300px]">
+          <div className="flex flex-col justify-between h-[calc(100%-70px)]">
+              <div className="overflow-auto max-h-[300px]">
                  {
-                cartList.map((item, index) => (
-                    <div className="border-b border-gray-200 p-4 flex gap-3" key={index}>
+                items.map((item) => (
+                    <div className="border-b border-gray-200 p-4 flex gap-3" key={item._id}>
             <div className="bg-primary-light aspect-square w-16 flex justify-center items-center">
               <Image
-                src={`/images/products/${item.imgUrl}`}
+                src={getImageUrl(item.imageUrl)}
                 width={63}
                 height={63}
                 alt={item.name}
@@ -77,6 +52,7 @@ export default function CartItems() {
               size="small"
               variant="ghost"
               className="w-7 h-7 p-0! self-center ml-auto"
+              onClick={() => removeItem(item._id)}
             >
               <FiTrash2 />
             </Button>
@@ -93,11 +69,12 @@ export default function CartItems() {
         </div>
         <Button
           variant="dark"
-          className="w-full mt-4 p-2" onClick={() => push("/payment")}
+          className="w-full mt-4 p-2" onClick={handlePayment}
         >
           <FiCreditCard /> Proceed to Payment
         </Button>
             </div>
+          </div>
         </CardWithHeader>
     )
 }

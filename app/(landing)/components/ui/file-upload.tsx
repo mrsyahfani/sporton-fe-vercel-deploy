@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { FiImage, FiTrash, FiTrash2, FiUploadCloud } from "react-icons/fi";
+import { FiImage, FiTrash2, FiUploadCloud } from "react-icons/fi";
 
 type TFileUploadProps = {
   onFileSelect?: (file: File | null) => void;
